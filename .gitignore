@@ -130,3 +130,5 @@ _modules/*
 (old)*.php
 (old)*.js
 (old)*.css
+(old)*.html
+(old)*.conf

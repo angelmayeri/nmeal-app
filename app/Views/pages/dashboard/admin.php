@@ -77,10 +77,10 @@
     new Chart(studentAllergensChart, {
       type: 'pie',
       data: {
-        labels: <?= json_encode($studentAllergenChart['labels'] ?? []) ?>,
+        labels: <?= $studentAllergenChart['labels'] ?>,
         datasets: [{
           label: ' Jumlah Siswa',
-          data: <?= json_encode($studentAllergenChart['data'] ?? []) ?>,
+          data: <?= $studentAllergenChart['data'] ?>,
         }]
       },
       plugins: [ChartDataLabels],
@@ -107,8 +107,6 @@
             formatter: (value, ctx) => {
               let sum = 0;
               let dataArr = ctx.chart.data.datasets[0].data;
-
-              if (!dataArr) return "0%";
 
               // PERBAIKAN DI SINI: Gunakan Number() atau parseFloat()
               dataArr.map(data => {

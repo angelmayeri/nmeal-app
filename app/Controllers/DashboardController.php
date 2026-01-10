@@ -85,8 +85,8 @@ class DashboardController extends BaseController
             }
 
             $data['classChart'] = [
-                'labels' => json_encode($chartLabels),
-                'data'   => json_encode($chartValues)
+                'labels' => $chartLabels,
+                'data'   => $chartValues
             ];
 
             $studentAllergens = $this->studentAllergenModel
@@ -105,8 +105,8 @@ class DashboardController extends BaseController
             }
 
             $data['studentAllergenChart'] = [
-                'labels' => json_encode($allergenLabels),
-                'data'   => json_encode($allergenValues)
+                'labels' => $allergenLabels,
+                'data'   => $allergenValues
             ];
 
             $today = date('Y-m-d');

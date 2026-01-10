@@ -63,19 +63,24 @@
   </div>
   <div class="row">
     <div class="col-md-4">
-      <canvas id="studentAllergensChart"></canvas>
-      <?php if (!$classChart['data'] || !$classChart['labels']): ?>
-        <div class="text-center text-muted mt-3">
-          <small>Belum ada data kelas untuk ditampilkan.</small>
-        </div>
-      <?php endif; ?>
-    </div>
-    <div class="col-md-8">
-      <canvas id="studentsChart"></canvas>
-      <?php if (!$studentAllergenChart['data'] || !$studentAllergenChart['labels']): ?>
+      <?php if (empty($studentAllergenChart['data'])): ?>
+        <p class="text-center text-secondary" style="font-size: 14.5px; font-weight: bold;">Distribusi Jenis Alergi Siswa</p>
         <div class="text-center text-muted mt-3">
           <small>Belum ada data alergi siswa untuk ditampilkan.</small>
         </div>
+      <?php else: ?>
+        <canvas id="studentAllergensChart"></canvas>
+
+      <?php endif; ?>
+    </div>
+    <div class="col-md-8">
+      <?php if (empty($classChart['data'])): ?>
+        <p class="text-center text-secondary" style="font-size: 14.5px; font-weight: bold;">Tren Pengambilan Makanan (30 Hari Terakhir)</p>
+        <div class="text-center text-muted mt-3">
+          <small>Belum ada data kelas untuk ditampilkan.</small>
+        </div>
+      <?php else: ?>
+        <canvas id="studentsChart"></canvas>
       <?php endif; ?>
     </div>
   </div>
@@ -87,10 +92,10 @@
     new Chart(studentAllergensChart, {
       type: 'pie',
       data: {
-        labels: <?= $studentAllergenChart['labels'] ?>,
+        labels: <?= json_encode($studentAllergenChart['labels']) ?>,
         datasets: [{
           label: ' Jumlah Siswa',
-          data: <?= $studentAllergenChart['data'] ?>,
+          data: <?= json_encode($studentAllergenChart['data']) ?>,
         }]
       },
       plugins: [ChartDataLabels],
@@ -137,10 +142,10 @@
     new Chart(studentsChart, {
       type: 'line',
       data: {
-        labels: <?= $classChart['labels'] ?>,
+        labels: <?= json_encode($classChart['labels']) ?>,
         datasets: [{
           label: ' Jumlah Siswa',
-          data: <?= $classChart['data'] ?>,
+          data: <?= json_encode($classChart['data']) ?>,
           backgroundColor: 'rgba(54, 162, 235, 0.2)',
           borderColor: 'rgba(54, 162, 235, 1)',
           borderWidth: 2,

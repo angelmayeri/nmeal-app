@@ -64,9 +64,19 @@
   <div class="row">
     <div class="col-md-4">
       <canvas id="studentAllergensChart"></canvas>
+      <?php if (!$classChart['data'] || !$classChart['labels']): ?>
+        <div class="text-center text-muted mt-3">
+          <small>Belum ada data kelas untuk ditampilkan.</small>
+        </div>
+      <?php endif; ?>
     </div>
     <div class="col-md-8">
       <canvas id="studentsChart"></canvas>
+      <?php if (!$studentAllergenChart['data'] || !$studentAllergenChart['labels']): ?>
+        <div class="text-center text-muted mt-3">
+          <small>Belum ada data alergi siswa untuk ditampilkan.</small>
+        </div>
+      <?php endif; ?>
     </div>
   </div>
 

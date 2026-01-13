@@ -64,7 +64,7 @@ $currentPage = service('uri')->getSegment(1);
             href="#" id="foodManagementDropdown" role="button" data-bs-toggle="collapse" data-bs-target="#foodManagementCollapse"
             aria-expanded="<?= isDropdownActive(['daftar-makanan', 'tambah-makanan'], $currentPage) ? 'true' : 'false' ?>" aria-controls="foodManagementCollapse">
             <i class="bi bi-fork-knife me-2"></i>
-            <span>Daftar Makanan</span>
+            <span>Kelola Makanan</span>
           </a>
           <div class="collapse <?= isDropdownActive(['daftar-makanan', 'tambah-makanan'], $currentPage) ? 'show' : '' ?>" id="foodManagementCollapse" data-bs-parent="#sidebarAccordion">
             <ul class="nav flex-column ms-3">
@@ -90,18 +90,18 @@ $currentPage = service('uri')->getSegment(1);
             href="#" id="ingredientManagementDropdown" role="button" data-bs-toggle="collapse" data-bs-target="#ingredientManagementCollapse"
             aria-expanded="<?= isDropdownActive(['daftar-bahan-makanan', 'tambah-bahan-makanan'], $currentPage) ? 'true' : 'false' ?>" aria-controls="ingredientManagementCollapse">
             <i class="bi bi-egg-fried me-2"></i>
-            <span>Daftar Bahan</br>Makanan</span>
+            <span>Kelola Informasi </br>Bahan Makanan</span>
           </a>
           <div class="collapse <?= isDropdownActive(['daftar-bahan-makanan', 'tambah-bahan-makanan'], $currentPage) ? 'show' : '' ?>" id="ingredientManagementCollapse" data-bs-parent="#sidebarAccordion">
             <ul class="nav flex-column ms-3">
               <li class="nav-item mb-2">
-                <a href="/daftar-bahan-makanan" class="nav-link rounded d-flex <?= ($currentPage == 'daftar-bahan-makanan') ? 'active' : '' ?>">
-                  Daftar Bahan Makanan
+                <a href="/informasi-daftar-bahan-makanan" class="nav-link rounded d-flex <?= ($currentPage == 'informasi-daftar-bahan-makanan') ? 'active' : '' ?>">
+                  Daftar Informasi </br>Bahan Makanan
                 </a>
               </li>
               <li class="nav-item">
                 <a href="/tambah-bahan-makanan" class="nav-link rounded d-flex <?= ($currentPage == 'tambah-bahan-makanan') ? 'active' : '' ?>">
-                  Tambah Bahan Makanan
+                  Tambah Infromasi </br>Bahan Makanan
                 </a>
               </li>
             </ul>
@@ -116,7 +116,7 @@ $currentPage = service('uri')->getSegment(1);
             href="#" id="allergenManagementDropdown" role="button" data-bs-toggle="collapse" data-bs-target="#allergenManagementCollapse"
             aria-expanded="<?= isDropdownActive(['daftar-alergen', 'tambah-alergen'], $currentPage) ? 'true' : 'false' ?>" aria-controls="allergenManagementCollapse">
             <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            <span>Daftar Alergen</span>
+            <span>Kelola Alergen</span>
           </a>
           <div class="collapse <?= isDropdownActive(['daftar-alergen', 'tambah-alergen'], $currentPage) ? 'show' : '' ?>" id="allergenManagementCollapse" data-bs-parent="#sidebarAccordion">
             <ul class="nav flex-column ms-3">
@@ -136,13 +136,13 @@ $currentPage = service('uri')->getSegment(1);
       <?php endif; ?>
 
       <!-- Daftar User | Tambah User -->
-      <?php if (session()->get('userRole') == 'admin' || session()->get('userRole') == 'guru'): ?>
+      <?php if (session()->get('userRole') == 'admin'): ?>
         <li class="nav-item mb-2">
           <a class="nav-link rounded d-flex dropdown-toggle mb-2 <?= isDropdownActive(['daftar-user', 'tambah-user'], $currentPage) ? 'outline-active' : '' ?>"
             href="#" id="userManagementDropdown" role="button" data-bs-toggle="collapse" data-bs-target="#userManagementCollapse"
             aria-expanded="<?= isDropdownActive(['daftar-user', 'tambah-user'], $currentPage) ? 'true' : 'false' ?>" aria-controls="userManagementCollapse">
             <i class="bi bi-person-lines-fill me-2"></i>
-            <span>Daftar User</span>
+            <span>Kelola User</span>
           </a>
           <div class="collapse <?= isDropdownActive(['daftar-user', 'tambah-user'], $currentPage) ? 'show' : '' ?>" id="userManagementCollapse" data-bs-parent="#sidebarAccordion">
             <ul class="nav flex-column ms-3">
@@ -168,7 +168,7 @@ $currentPage = service('uri')->getSegment(1);
             href="#" id="studentManagementDropdown" role="button" data-bs-toggle="collapse" data-bs-target="#studentManagementCollapse"
             aria-expanded="<?= isDropdownActive(['daftar-siswa', 'tambah-siswa'], $currentPage) ? 'true' : 'false' ?>" aria-controls="studentManagementCollapse">
             <i class="bi bi-people-fill me-2"></i>
-            <span>Daftar Siswa</span>
+            <span>Kelola Siswa</span>
           </a>
           <div class="collapse <?= isDropdownActive(['daftar-siswa', 'tambah-siswa'], $currentPage) ? 'show' : '' ?>" id="studentManagementCollapse" data-bs-parent="#sidebarAccordion">
             <ul class="nav flex-column ms-3">

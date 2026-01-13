@@ -42,37 +42,24 @@
 
 <!-- Contents -->
 <div class="home-ortu">
-  <h5 class="fw-bold mb-3">Rekomendasi untuk Anak</h5>
   <input type="hidden" value="<?= $status ?>" id="status">
   <input type="hidden" value="<?= $catatan ?>" id="catatan">
-  <div class="row">
-    <div class="col-md-8">
-      <div class="card bg-color-1 p-3 border-0 mb-3">
-        <div class="card px-4 py-3 border-0">
-          <div id="tipsHeader"></div>
-          <div id="tipsContent"></div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card card-right mb-3">
-        <div class="card-body text-center">
-          <?php if ((int)$status == 0): ?>
-            <h5 class="card-title fw-bold text-danger">Perlu diperhatikan!</h5>
-            <p class="card-text">Hari ini si kecil belum mengonsumsi makanannya</p>
-            <div class="btn btn-danger">Ingatkan si kecil ya!</div>
-          <?php elseif (!empty($catatan)): ?>
-            <h5 class="card-title fw-bold text-warning">Perlu diperhatikan!</h5>
-            <p class="card-text">Hari ini si kecil sudah mengonsumsi makanannya namun terdapat catatan dari guru :</p>
-            <p class="card-text fw-bold"><?= $catatan ?></p>
-            <div class="btn btn-warning">Ingatkan si kecil ya!</div>
-          <?php else: ?>
-            <h5 class="card-title fw-bold text-success">Si kecil hebat!</h5>
-            <p class="card-text">Hari ini si kecil sudah memenuhi gizi harian</p>
-            <div class="btn btn-success">Beri apresiasi si kecil!</div>
-          <?php endif; ?>
-        </div>
-      </div>
+  <div class="card card-right mb-3">
+    <div class="card-body text-center">
+      <?php if ((int)$status == 0): ?>
+        <h5 class="card-title fw-bold text-danger">Perlu diperhatikan!</h5>
+        <p class="card-text">Hari ini si kecil belum mengonsumsi makanannya</p>
+        <div class="btn btn-danger">Ingatkan si kecil ya!</div>
+      <?php elseif (!empty($catatan)): ?>
+        <h5 class="card-title fw-bold text-warning">Perlu diperhatikan!</h5>
+        <p class="card-text">Hari ini si kecil sudah mengonsumsi makanannya namun terdapat catatan dari guru :</p>
+        <p class="card-text fw-bold"><?= $catatan ?></p>
+        <div class="btn btn-warning">Ingatkan si kecil ya!</div>
+      <?php else: ?>
+        <h5 class="card-title fw-bold text-success">Si kecil hebat!</h5>
+        <p class="card-text">Hari ini si kecil sudah memenuhi gizi harian</p>
+        <div class="btn btn-success">Beri apresiasi si kecil!</div>
+      <?php endif; ?>
     </div>
   </div>
 </div>

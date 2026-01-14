@@ -217,7 +217,10 @@ function renderTips(content) {
   if (tipsContent) {
     tipsContent.innerHTML = `
         <p class="fw-bold color mt-3">Tips Hari Ini</p>
-        ${content}`;
+        ${content}
+        <div class="text-muted fst-italic mt-4">
+            <small>Informasi di atas dibuat oleh AI Gemini (Robot) berdasarkan prompt yang telah diatur sesuai dengan kondisi/catatan makanan anak. </br>Gemini dapat membuat kesalahan, jadi periksa kembali responsnya.</small>
+        </div>`;
   }
 }
 

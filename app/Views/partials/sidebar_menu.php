@@ -95,7 +95,7 @@ $currentPage = service('uri')->getSegment(1);
           <div class="collapse <?= isDropdownActive(['daftar-bahan-makanan', 'tambah-bahan-makanan'], $currentPage) ? 'show' : '' ?>" id="ingredientManagementCollapse" data-bs-parent="#sidebarAccordion">
             <ul class="nav flex-column ms-3">
               <li class="nav-item mb-2">
-                <a href="/informasi-daftar-bahan-makanan" class="nav-link rounded d-flex <?= ($currentPage == 'informasi-daftar-bahan-makanan') ? 'active' : '' ?>">
+                <a href="/daftar-bahan-makanan" class="nav-link rounded d-flex <?= ($currentPage == 'informasi-daftar-bahan-makanan') ? 'active' : '' ?>">
                   Daftar Informasi </br>Bahan Makanan
                 </a>
               </li>

@@ -43,9 +43,6 @@
             <?= $errors && isset($errors['username']) ? $errors['username'] : '' ?>
           </div>
         </div>
-
-
-
       </div>
     </div>
     <div class="row">

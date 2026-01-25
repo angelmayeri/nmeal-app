@@ -46,7 +46,7 @@
   <input type="hidden" value="<?= $status ?>" id="status">
   <input type="hidden" value="<?= $catatan ?>" id="catatan">
   <div class="row">
-    <div class="col-md-8">
+    <!-- <div class="col-md-8">
       <h5 class="fw-bold">Rekomendasi untuk Anak dari AI</h5>
       <div class="text-muted mb-3"><small>Rekomendasi dari AI (Robot) hanyalah saran yang bersifat informatif dan tidak 100% akurat. Untuk informasi yang lebih pasti dan akurat, konsultasikan dengan Ahli Gizi. <a href="https://www.google.com/search?q=ahli+gizi+di+sekitar+saya" target="_blank">Lihat Ahli Gizi di sekitar saya.</a></small></div>
       <div class="card bg-color-1 p-3 border-0 mb-3">
@@ -55,8 +55,9 @@
           <div id="tipsContent"></div>
         </div>
       </div>
-    </div>
-    <div class="col-md-4">
+    </div> -->
+    <!-- <div class="col-md-4"> -->
+    <div class="col-12">
       <div class="card card-right mb-3">
         <div class="card-body text-center">
           <?php if ((int)$status == 0): ?>

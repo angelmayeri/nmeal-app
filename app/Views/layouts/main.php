@@ -15,6 +15,7 @@
   <meta name="apple-mobile-web-app-title" content="NMeal">
   <link rel="apple-touch-icon" href="/icons/android-icon-192x192.png">
 
+  <!-- bootstrap -->
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
     rel="stylesheet"

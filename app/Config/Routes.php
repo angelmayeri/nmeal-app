@@ -7,7 +7,7 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 // Auth
-$routes->addRedirect('/', '/login');
+$routes->get('/', 'AuthController::landing');
 $routes->get('/login', 'AuthController::index');
 $routes->post('/login/auth', 'AuthController::login');
 $routes->get('/logout', 'AuthController::logout');
@@ -22,6 +22,9 @@ $routes->get('food-pickup/export-pdf', 'FoodPickupController::exportPdf', ['filt
 $routes->post('/food-pickup/save', 'FoodPickupController::save', ['filter' => 'authcheck']);
 // Get Student Allergens
 $routes->get('food-pickup/get-allergens/(:num)', 'FoodPickupController::getStudentAllergens/$1', ['filter' => 'authcheck']);
+// Upload & Delete Dokumentasi Foto per Kelas
+$routes->post('food-pickup/upload-doc-photo', 'FoodPickupController::uploadDocPhoto', ['filter' => 'authcheck']);
+$routes->post('food-pickup/delete-doc-photo', 'FoodPickupController::deleteDocPhoto', ['filter' => 'authcheck']);
 
 // Daftar user
 $routes->get('/daftar-user', 'DaftarUserController::index', ['filter' => 'authcheck']);

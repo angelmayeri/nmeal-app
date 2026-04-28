@@ -43,6 +43,11 @@ class CreateFoodPickupsTable extends Migration
                 'constraint' => '255',
                 'null' => true,
             ],
+            // Untuk Foto
+            'foto' => [
+                'type' => 'VARCHAR',
+                'constraint' => '255'
+            ],
             'created_at' => [
                 'type' => 'DATETIME',
                 'null' => true,

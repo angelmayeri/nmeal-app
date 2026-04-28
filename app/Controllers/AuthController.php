@@ -16,6 +16,15 @@ class AuthController extends BaseController
         $this->studentModel = new StudentModel();
     }
 
+    public function landing()
+    {
+        if (session()->get('loggedIn')) {
+            return redirect()->to('/dashboard');
+        }
+
+        return view('pages/landing', ['pageTitle' => 'Beranda']);
+    }
+
     public function index()
     {
         $loggedIn = session()->get('loggedIn');

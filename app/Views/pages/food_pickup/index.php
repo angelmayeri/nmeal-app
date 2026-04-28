@@ -220,9 +220,24 @@ $isDay = $dayFilter === 'Monday' || $dayFilter === 'Tuesday' || $dayFilter === '
       </div>
 
       <?php if ($tanggalFilter <= date("Y-m-d") && $isDay): ?>
-        <a href="<?= site_url('food-pickup/export-pdf?' . http_build_query(array_filter($currentFilters))) ?>" target="_blank" class="btn btn-outline-primary">
-          <i class="bi bi-printer me-2"></i>Cetak PDF
-        </a>
+        <div class="doc-photo-section mb-3">
+          <div class="d-flex gap-2 align-items-center flex-wrap">
+            <a href="<?= site_url('food-pickup/export-pdf?' . http_build_query(array_filter($currentFilters))) ?>" target="_blank" class="btn btn-outline-primary">
+              <i class="bi bi-printer me-2"></i>Cetak PDF
+            </a>
+            <button type="button" id="btnUploadDocPhoto" class="btn btn-outline-secondary">
+              <i class="bi bi-camera me-2"></i>Upload Dokumentasi
+            </button>
+            <input type="file" id="inputDocPhoto" accept="image/jpeg,image/png,image/jpg" class="d-none">
+            <span id="docPhotoInfo" class="<?= empty($fotoDocumentasi) ? 'd-none' : '' ?> d-inline-flex align-items-center gap-1 text-muted">
+              <i class="bi bi-image text-success"></i>
+              <small id="docPhotoName"><?= !empty($fotoDocumentasi) ? esc($fotoDocumentasi['name']) : '' ?></small>
+              <button type="button" id="btnDeleteDocPhoto" class="btn btn-sm btn-outline-danger py-0 px-1 ms-1" title="Hapus Foto">
+                <i class="bi bi-x-lg" style="font-size: 0.7rem;"></i>
+              </button>
+            </span>
+          </div>
+        </div>
       <?php endif; ?>
 
       <?php if ($isEditable): ?>
@@ -292,7 +307,11 @@ $isDay = $dayFilter === 'Monday' || $dayFilter === 'Tuesday' || $dayFilter === '
       const pageConfig = {
         csrfTokenName: '<?= csrf_token() ?>',
         operatorName: '<?= session()->get('nama') ?>',
-        getAllergensUrlPath: '<?= site_url('food-pickup/get-allergens') ?>'
+        getAllergensUrlPath: '<?= site_url('food-pickup/get-allergens') ?>',
+        uploadDocPhotoUrl: '<?= site_url('food-pickup/upload-doc-photo') ?>',
+        deleteDocPhotoUrl: '<?= site_url('food-pickup/delete-doc-photo') ?>',
+        kelas: '<?= $kelasFilter ?>',
+        tanggal: '<?= $tanggalFilter ?>'
       };
 
       initFoodPickupPage(pageConfig);

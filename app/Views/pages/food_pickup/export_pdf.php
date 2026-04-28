@@ -105,6 +105,17 @@
     </tbody>
   </table>
 
+  <?php if (!empty($fotoDocumentasi) && file_exists($fotoDocumentasi['path'])): ?>
+    <?php
+    $imgData = base64_encode(file_get_contents($fotoDocumentasi['path']));
+    $imgMime = mime_content_type($fotoDocumentasi['path']);
+    ?>
+    <div style="margin-top: 25px; text-align: center;">
+      <p style="font-weight: bold; margin-bottom: 10px;">Dokumentasi:</p>
+      <img src="data:<?= $imgMime ?>;base64,<?= $imgData ?>" style="max-width: 100%; max-height: 400px;" />
+    </div>
+  <?php endif; ?>
+
   <div style="margin-top: 30px; text-align: right;">
     <p>Dicetak pada: <?= date('d-m-Y H:i:s') ?></p>
   </div>

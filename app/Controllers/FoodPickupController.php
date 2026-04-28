@@ -29,6 +29,29 @@ class FoodPickupController extends BaseController
     $this->studentAllergenModel = new StudentAllergenModel();
   }
 
+  /**
+   * Cari file foto dokumentasi berdasarkan kelas dan tanggal.
+   * File disimpan dengan pola: kelas_{kelas}_{tanggal}.{ext}
+   */
+  private function findDocPhoto($kelas, $tanggal)
+  {
+    $basePath = ROOTPATH . 'public/uploads/foto_dokumentasi/';
+    $pattern  = 'kelas_' . $kelas . '_' . $tanggal;
+    $extensions = ['jpg', 'jpeg', 'png'];
+
+    foreach ($extensions as $ext) {
+      $filePath = $basePath . $pattern . '.' . $ext;
+      if (file_exists($filePath)) {
+        return [
+          'url'  => base_url('uploads/foto_dokumentasi/' . $pattern . '.' . $ext),
+          'path' => $filePath,
+          'name' => $pattern . '.' . $ext,
+        ];
+      }
+    }
+    return null;
+  }
+
   private function getPickupData($kelasFilter, $tanggalFilter, $search, $sortColumn, $sortOrder)
   {
     if (empty($kelasFilter) || $tanggalFilter > date("Y-m-d")) {
@@ -105,6 +128,9 @@ class FoodPickupController extends BaseController
       ->groupBy('foods.id')
       ->findAll();
 
+    // Cari foto dokumentasi untuk kelas & tanggal ini
+    $fotoDoc = $this->findDocPhoto($kelasFilter, $tanggalFilter);
+
     $data = [
       'pageTitle' => 'Pengambilan Makanan',
       'data' => $resultData,
@@ -115,7 +141,8 @@ class FoodPickupController extends BaseController
       'sortOrder' => $sortOrder,
       'currentFilters' => array_filter($currentFilters),
       'isEditable' => $isEditable,
-      'daftarMenuMakanan' => $menuMakananWithAllergens
+      'daftarMenuMakanan' => $menuMakananWithAllergens,
+      'fotoDocumentasi' => $fotoDoc
     ];
 
     return view('pages/food_pickup/index', $data);
@@ -136,10 +163,14 @@ class FoodPickupController extends BaseController
       return redirect()->back()->with('error', 'Tidak ada data untuk dicetak.');
     }
 
+    // Cari foto dokumentasi untuk embed di PDF
+    $fotoDoc = $this->findDocPhoto($kelasFilter, $tanggalFilter);
+
     $viewData = [
       'data' => $data,
       'kelas' => $kelasFilter,
-      'tanggal' => $tanggalFilter
+      'tanggal' => $tanggalFilter,
+      'fotoDocumentasi' => $fotoDoc
     ];
 
     $html = view('pages/food_pickup/export_pdf', $viewData);
@@ -302,6 +333,80 @@ class FoodPickupController extends BaseController
       ->findAll();
 
     return $this->response->setJSON($allergens);
+  }
+
+  /**
+   * Upload foto dokumentasi per kelas (AJAX)
+   */
+  public function uploadDocPhoto()
+  {
+    if ($this->userRole == 'ortu') {
+      return $this->response->setJSON(['status' => 'error', 'message' => 'Tidak diizinkan.']);
+    }
+
+    $kelas   = $this->request->getPost('kelas');
+    $tanggal = $this->request->getPost('tanggal');
+    $file    = $this->request->getFile('foto_dokumentasi');
+
+    if (empty($kelas) || empty($tanggal)) {
+      return $this->response->setJSON(['status' => 'error', 'message' => 'Kelas dan tanggal wajib diisi.']);
+    }
+
+    if (!$file || !$file->isValid()) {
+      return $this->response->setJSON(['status' => 'error', 'message' => 'File tidak valid.']);
+    }
+
+    // Validasi file
+    $validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    if (!in_array($file->getMimeType(), $validTypes)) {
+      return $this->response->setJSON(['status' => 'error', 'message' => 'Format file harus JPG atau PNG.']);
+    }
+
+    if ($file->getSizeByUnit('kb') > 2048) {
+      return $this->response->setJSON(['status' => 'error', 'message' => 'Ukuran file maksimal 2MB.']);
+    }
+
+    // Hapus file lama jika ada
+    $existing = $this->findDocPhoto($kelas, $tanggal);
+    if ($existing && file_exists($existing['path'])) {
+      unlink($existing['path']);
+    }
+
+    // Simpan file baru
+    $ext = $file->getClientExtension();
+    $fileName = 'kelas_' . $kelas . '_' . $tanggal . '.' . $ext;
+    $file->move(ROOTPATH . 'public/uploads/foto_dokumentasi/', $fileName);
+
+    return $this->response->setJSON([
+      'status'  => 'success',
+      'message' => 'Foto dokumentasi berhasil diupload.',
+      'url'     => base_url('uploads/foto_dokumentasi/' . $fileName),
+    ]);
+  }
+
+  /**
+   * Hapus foto dokumentasi per kelas (AJAX)
+   */
+  public function deleteDocPhoto()
+  {
+    if ($this->userRole == 'ortu') {
+      return $this->response->setJSON(['status' => 'error', 'message' => 'Tidak diizinkan.']);
+    }
+
+    $kelas   = $this->request->getPost('kelas');
+    $tanggal = $this->request->getPost('tanggal');
+
+    if (empty($kelas) || empty($tanggal)) {
+      return $this->response->setJSON(['status' => 'error', 'message' => 'Kelas dan tanggal wajib diisi.']);
+    }
+
+    $existing = $this->findDocPhoto($kelas, $tanggal);
+    if ($existing && file_exists($existing['path'])) {
+      unlink($existing['path']);
+      return $this->response->setJSON(['status' => 'success', 'message' => 'Foto dokumentasi berhasil dihapus.']);
+    }
+
+    return $this->response->setJSON(['status' => 'error', 'message' => 'Foto tidak ditemukan.']);
   }
 
   private function sendPushNotifications(array $studentIds)

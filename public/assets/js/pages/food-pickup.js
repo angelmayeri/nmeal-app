@@ -1,5 +1,5 @@
 function initFoodPickupPage(config) {
-  const { csrfTokenName, operatorName, getAllergensUrlPath } = config;
+  const { csrfTokenName, operatorName, getAllergensUrlPath, uploadDocPhotoUrl, deleteDocPhotoUrl, kelas, tanggal } = config;
 
   const detailModalEl = document.getElementById('detailModal');
   const detailModal = detailModalEl ? new bootstrap.Modal(detailModalEl) : null;
@@ -10,6 +10,12 @@ function initFoodPickupPage(config) {
   const allergenWarning = document.getElementById('allergenWarning');
   const conflictAllergensSpan = document.getElementById('conflictAllergens');
   const modalFoodSelect = document.getElementById('modalFoodId');
+
+  const btnUploadDocPhoto = document.getElementById('btnUploadDocPhoto');
+  const inputDocPhoto = document.getElementById('inputDocPhoto');
+  const docPhotoInfo = document.getElementById('docPhotoInfo');
+  const docPhotoName = document.getElementById('docPhotoName');
+  const btnDeleteDocPhoto = document.getElementById('btnDeleteDocPhoto');
 
   function updateStatusUI(studentId, isChecked) {
     const badge = document.getElementById('status_badge_' + studentId);
@@ -191,6 +197,96 @@ function initFoodPickupPage(config) {
         }
       }
       detailModal.hide();
+    });
+  }
+
+  // ==========================================
+  // DOC PHOTO UPLOAD / DELETE
+  // ==========================================
+  if (btnUploadDocPhoto && inputDocPhoto) {
+    btnUploadDocPhoto.addEventListener('click', () => inputDocPhoto.click());
+
+    inputDocPhoto.addEventListener('change', async function () {
+      const file = this.files[0];
+      if (!file) return;
+
+      // Validasi client-side
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+      if (!validTypes.includes(file.type)) {
+        Swal.fire('Error', 'Format file harus JPG atau PNG.', 'error');
+        this.value = '';
+        return;
+      }
+      if (file.size > 2 * 1024 * 1024) {
+        Swal.fire('Error', 'Ukuran file maksimal 2MB.', 'error');
+        this.value = '';
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('foto_dokumentasi', file);
+      formData.append('kelas', kelas);
+      formData.append('tanggal', tanggal);
+      formData.append(csrfTokenName, document.querySelector(`input[name="${csrfTokenName}"]`)?.value || '');
+
+      try {
+        Swal.fire({ title: 'Mengupload...', didOpen: () => Swal.showLoading(), allowOutsideClick: false });
+
+        const response = await fetch(uploadDocPhotoUrl, { method: 'POST', body: formData });
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          // Tampilkan nama file
+          const fileName = result.url.split('/').pop().split('?')[0];
+          if (docPhotoName) docPhotoName.textContent = fileName;
+          if (docPhotoInfo) docPhotoInfo.classList.remove('d-none');
+          Swal.fire('Berhasil!', result.message, 'success');
+        } else {
+          Swal.fire('Gagal!', result.message, 'error');
+        }
+      } catch (error) {
+        console.error('Upload error:', error);
+        Swal.fire('Error', 'Gagal mengupload foto.', 'error');
+      }
+
+      this.value = ''; // Reset input
+    });
+  }
+
+  if (btnDeleteDocPhoto) {
+    btnDeleteDocPhoto.addEventListener('click', async function () {
+      const confirmResult = await Swal.fire({
+        title: 'Hapus foto dokumentasi?',
+        text: 'Foto yang dihapus tidak dapat dikembalikan.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal',
+      });
+
+      if (!confirmResult.isConfirmed) return;
+
+      const formData = new FormData();
+      formData.append('kelas', kelas);
+      formData.append('tanggal', tanggal);
+      formData.append(csrfTokenName, document.querySelector(`input[name="${csrfTokenName}"]`)?.value || '');
+
+      try {
+        const response = await fetch(deleteDocPhotoUrl, { method: 'POST', body: formData });
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          if (docPhotoInfo) docPhotoInfo.classList.add('d-none');
+          if (docPhotoName) docPhotoName.textContent = '';
+          Swal.fire('Dihapus!', result.message, 'success');
+        } else {
+          Swal.fire('Gagal!', result.message, 'error');
+        }
+      } catch (error) {
+        console.error('Delete error:', error);
+        Swal.fire('Error', 'Gagal menghapus foto.', 'error');
+      }
     });
   }
 

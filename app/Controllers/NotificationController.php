@@ -19,8 +19,14 @@ class NotificationController extends BaseController
 
     $exists = $model->where('endpoint', $json->endpoint)->first();
 
-    if (!$exists) {
-      $model->save([
+    if ($exists) {
+      $model->update($exists['id'], [
+        'user_id' => $userId,
+        'p256dh' => $json->keys->p256dh,
+        'auth' => $json->keys->auth,
+      ]);
+    } else {
+      $model->insert([
         'user_id' => $userId,
         'endpoint' => $json->endpoint,
         'p256dh' => $json->keys->p256dh,

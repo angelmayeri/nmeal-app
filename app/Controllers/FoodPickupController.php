@@ -263,8 +263,6 @@ class FoodPickupController extends BaseController
         $food_id_siswa = ($raw_food_id === '' || $raw_food_id === '0') ? null : $raw_food_id;
 
         if ($is_checked) {
-          $studentsToNotify[] = $student_id;
-
           if ($is_existing) {
             $update_data[] = [
               'id' => $existing_map[$student_id]['id'],
@@ -275,6 +273,8 @@ class FoodPickupController extends BaseController
               'updated_at' => $timestamp
             ];
           } else {
+            $studentsToNotify[] = $student_id;
+
             $insert_data[] = [
               'student_id' => $student_id,
               'user_id' => $operator_id,
@@ -428,16 +428,29 @@ class FoodPickupController extends BaseController
 
     if (empty($parentNotifications)) return;
 
-    $opensslPath = 'C:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\extras\ssl\openssl.cnf';
+    // Cari path openssl.cnf secara dinamis (Laragon / XAMPP / Custom env)
+    $opensslPath = null;
+    $possiblePaths = array_filter([
+      getenv('OPENSSL_CONF'),
+      ini_get('openssl.cafile') ? dirname(ini_get('openssl.cafile')) . DIRECTORY_SEPARATOR . 'openssl.cnf' : null,
+      defined('PHP_BINARY') ? dirname(PHP_BINARY) . DIRECTORY_SEPARATOR . 'extras' . DIRECTORY_SEPARATOR . 'ssl' . DIRECTORY_SEPARATOR . 'openssl.cnf' : null,
+      defined('PHP_BINARY') ? dirname(PHP_BINARY) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'extras' . DIRECTORY_SEPARATOR . 'ssl' . DIRECTORY_SEPARATOR . 'openssl.cnf' : null,
+      'C:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\extras\ssl\openssl.cnf',
+    ]);
 
-    if (!file_exists($opensslPath)) {
-      log_message('error', 'CRITICAL: File openssl.cnf TIDAK DITEMUKAN di path: ' . $opensslPath);
-      return; // Stop proses
-    } else {
-      log_message('info', 'SUCCESS: File openssl.cnf ditemukan.');
+    foreach ($possiblePaths as $path) {
+      if (file_exists($path)) {
+        $opensslPath = $path;
+        break;
+      }
     }
 
-    putenv("OPENSSL_CONF=" . $opensslPath);
+    if ($opensslPath) {
+      log_message('info', 'SUCCESS: File openssl.cnf ditemukan di path: ' . $opensslPath);
+      putenv("OPENSSL_CONF=" . $opensslPath);
+    } else {
+      log_message('notice', 'NOTICE: File openssl.cnf kustom tidak ditemukan, melanjutkan dengan konfigurasi OpenSSL sistem.');
+    }
 
     // Konfigurasi Web Push
     $auth = [
@@ -490,6 +503,12 @@ class FoodPickupController extends BaseController
         } else {
           // Info Gagal (PENTING)
           log_message('error', "[PUSH GAGAL] Pesan: {$report->getReason()} | Endpoint: {$endpoint}");
+
+          // Bersihkan subscription yang sudah expired / tidak valid
+          if ($report->isSubscriptionExpired()) {
+            $subModel->where('endpoint', $endpoint)->delete();
+            log_message('info', "[PUSH CLEANUP] Subscription expired dihapus: {$endpoint}");
+          }
         }
       }
     } catch (\Exception $e) {

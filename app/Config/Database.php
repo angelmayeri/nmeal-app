@@ -193,7 +193,21 @@ class Database extends Config
     {
         parent::__construct();
 
-        $dbUrl = getenv('MYSQL_URL') ?: getenv('MYSQL_PRIVATE_URL') ?: getenv('DATABASE_URL');
+        $getEnv = static function (string $key): ?string {
+            $val = $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key);
+            if ($val === false || $val === null) {
+                return null;
+            }
+            $val = trim((string) $val);
+            $val = trim($val, '\'"');
+            return $val !== '' ? $val : null;
+        };
+
+        $dbUrl = $getEnv('MYSQL_URL')
+            ?: $getEnv('MYSQL_PRIVATE_URL')
+            ?: $getEnv('MYSQL_PUBLIC_URL')
+            ?: $getEnv('DATABASE_URL');
+
         if ($dbUrl) {
             $parsed = parse_url($dbUrl);
             if ($parsed && !empty($parsed['host'])) {
@@ -214,21 +228,35 @@ class Database extends Config
             }
         }
 
-        if (empty($this->default['hostname']) || $this->default['hostname'] === 'localhost') {
-            if (getenv('MYSQLHOST')) {
-                $this->default['hostname'] = getenv('MYSQLHOST');
+        if (empty($this->default['hostname']) || $this->default['hostname'] === 'localhost' || $this->default['hostname'] === '127.0.0.1') {
+            if ($getEnv('database_default_hostname')) {
+                $this->default['hostname'] = $getEnv('database_default_hostname');
+            } elseif ($getEnv('MYSQLHOST')) {
+                $this->default['hostname'] = $getEnv('MYSQLHOST');
             }
-            if (getenv('MYSQLDATABASE')) {
-                $this->default['database'] = getenv('MYSQLDATABASE');
+
+            if ($getEnv('database_default_database')) {
+                $this->default['database'] = $getEnv('database_default_database');
+            } elseif ($getEnv('MYSQLDATABASE')) {
+                $this->default['database'] = $getEnv('MYSQLDATABASE');
             }
-            if (getenv('MYSQLUSER')) {
-                $this->default['username'] = getenv('MYSQLUSER');
+
+            if ($getEnv('database_default_username')) {
+                $this->default['username'] = $getEnv('database_default_username');
+            } elseif ($getEnv('MYSQLUSER')) {
+                $this->default['username'] = $getEnv('MYSQLUSER');
             }
-            if (getenv('MYSQLPASSWORD')) {
-                $this->default['password'] = getenv('MYSQLPASSWORD');
+
+            if ($getEnv('database_default_password')) {
+                $this->default['password'] = $getEnv('database_default_password');
+            } elseif ($getEnv('MYSQLPASSWORD')) {
+                $this->default['password'] = $getEnv('MYSQLPASSWORD');
             }
-            if (getenv('MYSQLPORT')) {
-                $this->default['port'] = (int) getenv('MYSQLPORT');
+
+            if ($getEnv('database_default_port')) {
+                $this->default['port'] = (int) $getEnv('database_default_port');
+            } elseif ($getEnv('MYSQLPORT')) {
+                $this->default['port'] = (int) $getEnv('MYSQLPORT');
             }
         }
 

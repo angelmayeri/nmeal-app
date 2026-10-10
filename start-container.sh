@@ -9,9 +9,16 @@ chmod -R 777 /app/public/uploads
 echo "==> Database config check:"
 echo "    database_default_hostname: ${database_default_hostname:-(not set)}"
 echo "    MYSQLHOST: ${MYSQLHOST:-(not set)}"
-echo "    MYSQL_URL: ${MYSQL_URL:-(not set)}"
+echo "    MYSQL_URL: $(echo "${MYSQL_URL:-(not set)}" | sed -E 's/:([^@:]+)@/:****@/')"
+echo "    MYSQL_PRIVATE_URL: $(echo "${MYSQL_PRIVATE_URL:-(not set)}" | sed -E 's/:([^@:]+)@/:****@/')"
+echo "    MYSQL_PUBLIC_URL: $(echo "${MYSQL_PUBLIC_URL:-(not set)}" | sed -E 's/:([^@:]+)@/:****@/')"
 
-if [ -n "$database_default_hostname" ] || [ -n "$MYSQLHOST" ] || [ -n "$MYSQL_PRIVATE_URL" ] || [ -n "$MYSQL_URL" ]; then
+DB_DETECTED=""
+if [ -n "$database_default_hostname" ] || [ -n "$MYSQLHOST" ] || [ -n "$MYSQL_URL" ] || [ -n "$MYSQL_PRIVATE_URL" ] || [ -n "$MYSQL_PUBLIC_URL" ] || [ -n "$DATABASE_URL" ]; then
+    DB_DETECTED="true"
+fi
+
+if [ "$DB_DETECTED" = "true" ]; then
     echo "==> Running database migrations..."
     php spark migrate --all || echo "Warning: Migration failed or database not ready yet."
 
@@ -19,6 +26,8 @@ if [ -n "$database_default_hostname" ] || [ -n "$MYSQLHOST" ] || [ -n "$MYSQL_PR
         echo "==> Running initial database seeding..."
         php spark db:seed DatabaseSeeder || echo "Warning: Seeding failed."
     fi
+else
+    echo "==> WARNING: No database configuration detected in environment variables!"
 fi
 
 echo "==> Starting FrankenPHP / Caddy web server..."

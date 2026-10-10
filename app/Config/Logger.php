@@ -121,17 +121,15 @@ class Logger extends BaseConfig
             'path' => '',
         ],
 
-        /*
-         * The ChromeLoggerHandler requires the use of the Chrome web browser
-         * and the ChromeLogger extension. Uncomment this block to use it.
-         */
-        // 'CodeIgniter\Log\Handlers\ChromeLoggerHandler' => [
-        //     /*
-        //      * The log levels that this handler will handle.
-        //      */
-        //     'handles' => ['critical', 'alert', 'emergency', 'debug',
-        //                   'error', 'info', 'notice', 'warning'],
-        // ],
+        \CodeIgniter\Log\Handlers\ErrorlogHandler::class => [
+            'handles' => [
+                'critical',
+                'alert',
+                'emergency',
+                'error',
+            ],
+            'messageType' => 0,
+        ],
 
         /*
          * The ErrorlogHandler writes the logs to PHP's native `error_log()` function.

@@ -193,6 +193,29 @@ class Database extends Config
     {
         parent::__construct();
 
+        $dbUrl = getenv('MYSQL_PRIVATE_URL') ?: getenv('MYSQL_URL') ?: getenv('DATABASE_URL');
+        if ($dbUrl && empty(getenv('database_default_hostname'))) {
+            $parsed = parse_url($dbUrl);
+            if ($parsed) {
+                if (!empty($parsed['host'])) {
+                    $this->default['hostname'] = $parsed['host'];
+                }
+                if (!empty($parsed['port'])) {
+                    $this->default['port'] = (int) $parsed['port'];
+                }
+                if (isset($parsed['user'])) {
+                    $this->default['username'] = rawurldecode($parsed['user']);
+                }
+                if (isset($parsed['pass'])) {
+                    $this->default['password'] = rawurldecode($parsed['pass']);
+                }
+                if (!empty($parsed['path'])) {
+                    $this->default['database'] = ltrim($parsed['path'], '/');
+                }
+                $this->default['DBDriver'] = 'MySQLi';
+            }
+        }
+
         if (getenv('MYSQLHOST') && empty(getenv('database_default_hostname'))) {
             $this->default['hostname'] = getenv('MYSQLHOST');
         }

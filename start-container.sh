@@ -7,8 +7,7 @@ mkdir -p /app/public/uploads/foto_dokumentasi /app/public/uploads/foto_user
 chmod -R 777 /app/writable
 chmod -R 777 /app/public/uploads
 
-# Jalankan migrasi dan seeder database otomatis jika database tersedia
-if [ -n "$database_default_hostname" ] || [ -n "$MYSQLHOST" ]; then
+if [ -n "$database_default_hostname" ] || [ -n "$MYSQLHOST" ] || [ -n "$MYSQL_PRIVATE_URL" ] || [ -n "$MYSQL_URL" ]; then
     echo "==> Running database migrations..."
     php spark migrate --all || echo "Warning: Migration failed or database not ready yet."
 

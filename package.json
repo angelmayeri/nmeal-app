@@ -1,6 +1,7 @@
 {
   "name": "ci4-browsersync-setup",
   "version": "1.0.0",
+  "packageManager": "npm@10.8.2",
   "private": true,
   "description": "CodeIgniter 4 + BrowserSync dev setup",
   "scripts": {
